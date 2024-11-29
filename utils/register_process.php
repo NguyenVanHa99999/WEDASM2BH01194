@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // Thêm người dùng mới vào cơ sở dữ liệu
     $stmt = $conn->prepare("INSERT INTO users (email, password, full_name, role_id) VALUES (:email, :password, :full_name, :role_id)");
-    $role_id = 1; // Gán giá trị role_id hợp lệ
+    $role_id = 2; // Gán giá trị role_id hợp lệ
     $stmt->bindParam(':email', $email);
     $stmt->bindParam(':password', $hashed_password);
     $stmt->bindParam(':full_name', $full_name);

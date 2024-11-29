@@ -1,8 +1,8 @@
 <?php
-$host = 'localhost';
-$username = 'root';
-$password = '';
-$db_name = 'wedvanhashop';
+ $host = 'sql302.infinityfree.com';
+ $db_name = 'if0_37816141_wedvanhashop';
+ $username = 'if0_37816141';
+ $password = 'TMAHgxtstKdo8R';
 
 try {
     // Kết nối MySQL
