@@ -4,10 +4,10 @@ class DatabaseConnection {
     private $conn;
 
     private function __construct() {
-        $host = 'sql302.infinityfree.com';
-        $db_name = 'if0_37816141_wedvanhashop';
-        $username = 'if0_37816141';
-        $password = 'TMAHgxtstKdo8R';
+        $host = 'localhost';
+        $db_name = 'wedvanhashop';
+        $username = 'root';
+        $password = '';
 
         try {
             $this->conn = new PDO("mysql:host=$host;dbname=$db_name;charset=utf8", $username, $password);

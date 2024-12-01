@@ -175,8 +175,8 @@ if ($conn) {
         document.addEventListener('DOMContentLoaded', function() {
             Swal.fire({
                 icon: 'success',
-                title: 'Thành Công!',
-                text: 'Sản phẩm đã được thêm thành công.',
+                title: 'success!',
+                text: 'Product added successfully.',
                 toast: true,
                 position: 'top-end',
                 showConfirmButton: false,

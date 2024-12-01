@@ -185,7 +185,7 @@ if (isset($_SESSION['user_id'])) {
               </div>
             </form>
             <p class="mt-20">Already have an account ?<a href="sign-in.php"> Login</a></p>
-            <p><a href="forget-password.php"> Forgot your password?</a></p>
+            <p><a href="/WEDASM2/pages/auth/forget-password.php"> Forgot your password?</a></p>
           </div>
         </div>
       </div>

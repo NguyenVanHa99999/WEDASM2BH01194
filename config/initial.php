@@ -1,8 +1,8 @@
 <?php
- $host = 'sql302.infinityfree.com';
- $db_name = 'if0_37816141_wedvanhashop';
- $username = 'if0_37816141';
- $password = 'TMAHgxtstKdo8R';
+$host = 'localhost';
+$username = 'root';
+$password = '';
+$db_name = 'wedvanhashop';
 
 try {
     // Kết nối MySQL
@@ -111,6 +111,31 @@ try {
     $conn->exec($sql);
     echo "Table cart created successfully<br>";
 
+    // Tạo bảng password_resets (cho tính năng quên mật khẩu)
+    $sql = "CREATE TABLE IF NOT EXISTS password_resets (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        user_id INT NOT NULL,
+        token VARCHAR(255) NOT NULL,
+        expires_at INT NOT NULL,
+        FOREIGN KEY (user_id) REFERENCES users(user_id)
+    ) ENGINE=InnoDB";
+    $conn->exec($sql);
+    echo "Table password_resets created successfully<br>";
+
+    // Tạo bảng reviews (đánh giá sản phẩm)
+    $sql = "CREATE TABLE IF NOT EXISTS reviews (
+        review_id INT AUTO_INCREMENT PRIMARY KEY,
+        product_id INT NOT NULL,
+        user_id INT NOT NULL,
+        rating INT NOT NULL CHECK (rating >= 1 AND rating <= 5),
+        review_text TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (product_id) REFERENCES products(product_id),
+        FOREIGN KEY (user_id) REFERENCES users(user_id)
+    ) ENGINE=InnoDB";
+    $conn->exec($sql);
+    echo "Table reviews created successfully<br>";
+
     // Thêm dữ liệu mẫu vào bảng roles
     $sql = "INSERT INTO roles (name, description) VALUES 
         ('admin', 'Quản trị viên'),
@@ -119,6 +144,23 @@ try {
     $conn->exec($sql);
     echo "Sample roles data inserted successfully<br>";
 
+    // Thêm dữ liệu mẫu vào bảng users
+    $sql = "INSERT INTO users (email, password, role_id, full_name) VALUES
+        ('admin@example.com', 'admin_password', 1, 'Admin User'),
+        ('user@example.com', 'user_password', 2, 'Regular User')
+    ON DUPLICATE KEY UPDATE email=VALUES(email)";
+    $conn->exec($sql);
+    echo "Sample users data inserted successfully<br>";
+
+    // Thêm dữ liệu mẫu vào bảng products
+    $sql = "INSERT INTO products (name, description, price, sale_price, stock_quantity, category, status, is_featured) VALUES
+        ('Laptop 1', 'Description for Laptop 1', 1000.00, 950.00, 10, 'Laptops', 'active', TRUE),
+        ('Monitor 1', 'Description for Monitor 1', 300.00, 280.00, 20, 'Screen', 'active', FALSE),
+        ('Mac Mini 1', 'Description for Mac Mini 1', 1200.00, 1100.00, 15, 'Mac-mini', 'active', TRUE)
+    ON DUPLICATE KEY UPDATE name=VALUES(name)";
+    $conn->exec($sql);
+    echo "Sample products data inserted successfully<br>";
+
 } catch (PDOException $e) {
     echo "Error: " . $e->getMessage() . "<br>";
 }
@@ -126,3 +168,5 @@ try {
 // Đóng kết nối
 $conn = null;
 ?>
+
+<!-- ALTER TABLE users ADD COLUMN reset_token VARCHAR(255) NULL; -->
