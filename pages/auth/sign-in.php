@@ -26,10 +26,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if ($user && password_verify($password, $user['password'])) {
-        // Đăng nhập thành công, trả về thông tin người dùng
-        $_SESSION['user_id'] = $user['user_id']; // Lưu user_id vào session
+      
+        $_SESSION['user_id'] = $user['user_id']; 
 
-        // Tạo mảng để trả về email và role_name
+   
         $response = [
             'user' => [
                 'email' => $user['email'],
@@ -37,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             ]
         ];
 
-        echo json_encode($response); // Trả về JSON
+        echo json_encode($response); 
         exit();
     } else {
         $error_message = "Incorrect username or password.";
