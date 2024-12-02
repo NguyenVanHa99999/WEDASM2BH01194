@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         echo json_encode($response); // Trả về JSON
         exit();
     } else {
-        $error_message = "Tên đăng nhập hoặc mật khẩu không đúng.";
+        $error_message = "Incorrect username or password.";
         echo json_encode(['error' => $error_message]);
         exit();
     }
@@ -245,7 +245,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         // Chuyển hướng người dùng đến trang chính
                         window.location.href = '/WEDASM2/index.php';
                     } else {
-                        alert("Tên đăng nhập hoặc mật khẩu không đúng.");
+                        alert("Incorrect username or password.");
                     }
                 }
             };
