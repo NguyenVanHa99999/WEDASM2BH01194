@@ -2,11 +2,11 @@
 require_once $_SERVER['DOCUMENT_ROOT'] . '/WEDASM2/config/connect.php';
 $conn = getDatabaseConnection();
 if (!$conn) {
-    die("Kết nối cơ sở dữ liệu không thành công!");
+    die("Database connection failed!");
 }
 session_start();
 if (isset($_SESSION['user_id'])) {
-    // Nếu đã đăng nhập, chuyển hướng về trang index.php
+    // If logged in, redirect to index.php page
     header('Location: /WEDASM2/index.php');
     exit();
 }
@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $email = trim($_POST['email']);
     $password = trim($_POST['password']);
 
-    // Kiểm tra xem email và password có đúng không
+    // Check if email and password are correct
     $stmt = $conn->prepare("SELECT u.user_id, u.email, u.password, r.name AS role_name
                             FROM users u
                             JOIN roles r ON u.role_id = r.role_id
@@ -123,9 +123,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             <a href="<?php echo '/WEDASM2/index.php'; ?>">Home</a>
                         </li><!-- / Home -->
 
-
-
-
                         <!-- Pages -->
                         <li class="dropdown full-width dropdown-slide">
                             <a href="#!" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown"
@@ -218,41 +215,69 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 
     <script>
-        document.querySelector('form').addEventListener('submit', function(event) {
-            event.preventDefault(); // Ngừng hành động mặc định (reload trang)
+    // Attach an event listener to the form's submit event
+    document.querySelector('form').addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent default form submission
 
-            const email = document.querySelector('input[name="email"]').value;
-            const password = document.querySelector('input[name="password"]').value;
+        const email = document.querySelector('input[name="email"]').value.trim();
+        const password = document.querySelector('input[name="password"]').value.trim();
 
-            // Gửi dữ liệu qua AJAX
-            const xhr = new XMLHttpRequest();
-            xhr.open('POST', 'sign-in.php', true);
-            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        // Client-side validation
+        if (!email || !password) {
+            alert("Email and password fields cannot be empty.");
+            return;
+        }
 
-            xhr.onload = function() {
-                if (xhr.status === 200) {
-                    const response = JSON.parse(xhr.responseText);
-                    if (response.user) {
-                        // Tạo đối tượng chỉ chứa email và roles.name
-                        const userInfo = {
-                            email: response.user.email, // Lưu email
-                            role: response.user.role // Lưu roles.name
-                        };
+        // Email format validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            alert("Please enter a valid email address.");
+            return;
+        }
 
-                        // Lưu thông tin người dùng vào localStorage (chỉ lưu email và role)
-                        localStorage.setItem('user', JSON.stringify(userInfo));
+        // Password length validation
+        if (password.length < 6) {
+            alert("Password must be at least 6 characters long.");
+            return;
+        }
 
-                        // Chuyển hướng người dùng đến trang chính
-                        window.location.href = '/WEDASM2/index.php';
-                    } else {
-                        alert("Incorrect username or password.");
-                    }
+        // Send the data to the server using AJAX
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', 'sign-in.php', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                const response = JSON.parse(xhr.responseText);
+
+                if (response.user) {
+                    // Success: Save user info to localStorage
+                    const userInfo = {
+                        email: response.user.email,
+                        role: response.user.role
+                    };
+                    localStorage.setItem('user', JSON.stringify(userInfo));
+
+                    // Show success notification
+                    alert("Login successful! Redirecting to the homepage...");
+                    
+                    // Redirect to the main page
+                    window.location.href = '/WEDASM2/index.php';
+                } else if (response.error) {
+                    // Show server error message
+                    alert(response.error);
+                } else {
+                    alert("An unknown error occurred. Please try again.");
                 }
-            };
+            } else {
+                alert("Failed to connect to the server. Please try again later.");
+            }
+        };
 
-            xhr.send(`email=${email}&password=${password}`);
-        });
-    </script>
+        // Encode the data and send it
+        xhr.send(`email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`);
+    });
+</script>
     <!-- Main jQuery -->
     <script src="plugins/jquery/dist/jquery.min.js"></script>
     <!-- Bootstrap 3.1 -->
