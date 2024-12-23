@@ -2,7 +2,7 @@
 require_once $_SERVER['DOCUMENT_ROOT'] . '/WEDASM2/config/connect.php';
 $conn = getDatabaseConnection();
 if (!$conn) {
-    die("Database connection failed!");
+    die("Kết nối cơ sở dữ liệu không thành công!");
 }
 session_start();
 if (isset($_SESSION['user_id'])) {
@@ -123,6 +123,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             <a href="<?php echo '/WEDASM2/index.php'; ?>">Home</a>
                         </li><!-- / Home -->
 
+
+
+
                         <!-- Pages -->
                         <li class="dropdown full-width dropdown-slide">
                             <a href="#!" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown"
@@ -215,33 +218,33 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 
     <script>
-    // Attach an event listener to the form's submit event
+    // Gắn sự kiện vào nút submit của form
     document.querySelector('form').addEventListener('submit', function(event) {
-        event.preventDefault(); // Prevent default form submission
+        event.preventDefault(); // Ngăn hành động mặc định (reload trang)
 
         const email = document.querySelector('input[name="email"]').value.trim();
         const password = document.querySelector('input[name="password"]').value.trim();
 
-        // Client-side validation
+        // Kiểm tra dữ liệu nhập
         if (!email || !password) {
-            alert("Email and password fields cannot be empty.");
+            alert("Email và mật khẩu không được để trống.");
             return;
         }
 
-        // Email format validation
+        // Kiểm tra định dạng email
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
-            alert("Please enter a valid email address.");
+            alert("Vui lòng nhập địa chỉ email hợp lệ.");
             return;
         }
 
-        // Password length validation
+        // Kiểm tra độ dài mật khẩu
         if (password.length < 6) {
-            alert("Password must be at least 6 characters long.");
+            alert("Mật khẩu phải có ít nhất 6 ký tự.");
             return;
         }
 
-        // Send the data to the server using AJAX
+        // Gửi dữ liệu tới server qua AJAX
         const xhr = new XMLHttpRequest();
         xhr.open('POST', 'sign-in.php', true);
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -251,30 +254,30 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 const response = JSON.parse(xhr.responseText);
 
                 if (response.user) {
-                    // Success: Save user info to localStorage
+                    // Đăng nhập thành công: Lưu thông tin người dùng
                     const userInfo = {
                         email: response.user.email,
                         role: response.user.role
                     };
                     localStorage.setItem('user', JSON.stringify(userInfo));
 
-                    // Show success notification
-                    alert("Login successful! Redirecting to the homepage...");
+                    // Hiển thị thông báo thành công
+                    alert("Đăng nhập thành công! Đang chuyển hướng tới trang chính...");
                     
-                    // Redirect to the main page
+                    // Chuyển hướng tới trang chính
                     window.location.href = '/WEDASM2/index.php';
                 } else if (response.error) {
-                    // Show server error message
+                    // Hiển thị lỗi từ server
                     alert(response.error);
                 } else {
-                    alert("An unknown error occurred. Please try again.");
+                    alert("Đã xảy ra lỗi không xác định. Vui lòng thử lại.");
                 }
             } else {
-                alert("Failed to connect to the server. Please try again later.");
+                alert("Không thể kết nối tới server. Vui lòng thử lại sau.");
             }
         };
 
-        // Encode the data and send it
+        // Mã hóa dữ liệu và gửi đi
         xhr.send(`email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`);
     });
 </script>
